@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File Sharing</title>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            color: #fff;
+            text-align: center;
+        }
+        h1, h2 {
+            color:rgb(252, 188, 60);
+            text-shadow: 0 0 10px #ffcc00, 0 0 20px #ff6600;
+        }
+        form {
+            margin-bottom: 20px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            display: inline-block;
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
+        }
+        input[type="file"] {
+            padding: 10px;
+            border-radius: 5px;
+        }
+        button {
+            background: #ff6600;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: 0.3s;
+            box-shadow: 0 0 10px #ff6600;
+        }
+        button:hover {
+            background: #ff3300;
+            box-shadow: 0 0 15px #ff3300;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        li {
+            background: rgba(255, 255, 255, 0.1);
+            margin: 10px 0;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        a {
+            text-decoration: none;
+            color: #00ccff;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+        a:hover {
+            color: #ffcc00;
+            text-shadow: 0 0 10px #ffcc00;
+        }
+        .preview {
+            max-width: 100px;
+            max-height: 100px;
+            margin: 10px auto;
+            display: block;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+        }
+    </style>
+    <script>
+        function validateFile() {
+            const fileInput = document.querySelector('input[type="file"]');
+            const file = fileInput.files[0];
+            const maxSize = 5 * 1024 * 1024; // 5 MB
+            const allowedTypes = ['image/jpeg', 'image/png', 'application/pdf'];
+
+            if (file) {
+                if (file.size > maxSize) {
+                    alert('File size exceeds 5 MB');
+                    return false;
+                }
+                // if (!allowedTypes.includes(file.type)) {
+                //     alert('File type not allowed');
+                //     return false;
+                // }
+            }
+            return true;
+        }
+
+        function previewFile(file) {
+            const previewContainer = document.getElementById('previewContainer');
+            previewContainer.innerHTML = '';
+
+            if (file.type.startsWith('image/')) {
+                const img = document.createElement('img');
+                img.src = URL.createObjectURL(file);
+                img.className = 'preview';
+                previewContainer.appendChild(img);
+            } else if (file.type === 'application/pdf') {
+                const iframe = document.createElement('iframe');
+                iframe.src = URL.createObjectURL(file);
+                iframe.className = 'preview';
+                previewContainer.appendChild(iframe);
+            }
+        }
+
+        document.querySelector('input[type="file"]').addEventListener('change', function() {
+            const file = this.files[0];
+            if (file) {
+                previewFile(file);
+            }
+        });
+    </script>
+</head>
+<body>
+    
+    <h2>Upload a File</h2>
+    <form action="/uploadfile/" enctype="multipart/form-data" method="post" onsubmit="return validateFile()">
+        <input type="file" name="file">
+        <button type="submit">Upload</button>
+    </form>
+
+    <div id="previewContainer"></div>
+
+    <h2>Available Files</h2>
+    <ul>
+        {% for file in files %}
+        <li>
+            <span>{{ file }}</span>
+            <a href="/downloadfile/{{ file }}">Download</a>
+            <form action="/deletefile/{{ file }}" method="post" style="display:inline;">
+                <button type="submit">Delete</button>
+            </form>
+        </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
