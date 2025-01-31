@@ -6,6 +6,7 @@ import shutil
 import socket
 import uvicorn
 
+
 app = FastAPI()
 templates = Jinja2Templates(directory="templates")
 
