@@ -83,7 +83,7 @@
         function validateFile() {
             const fileInput = document.querySelector('input[type="file"]');
             const file = fileInput.files[0];
-            const maxSize = 5 * 1024 * 1024; // 5 MB
+            const maxSize = 500 * 1024 * 1024; // 500 MB
             const allowedTypes = ['image/jpeg', 'image/png', 'application/pdf'];
 
             if (file) {
